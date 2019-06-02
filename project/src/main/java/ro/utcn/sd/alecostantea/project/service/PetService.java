@@ -37,8 +37,14 @@ public class PetService {
         return factory.createPetRepository().findByID(id).get();
     }
 
+    @Transactional
     public List<Pet> findPetsOfUser(User user){
         return factory.createUserRepository().findByID(user.getId()).get().getPets();
+    }
+
+    @Transactional
+    public Pet findByName(String name){
+        return factory.createPetRepository().findByName(name).get();
     }
 
 }

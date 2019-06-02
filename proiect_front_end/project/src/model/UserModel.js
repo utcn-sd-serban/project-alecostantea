@@ -10,10 +10,12 @@ class UserModel extends EventEmitter {
                 password: ""
             },
             userType : false,
+            pets: [],
             newPet: {
                 petName: "",
                 petType: "",
-            }
+            },
+            bookings:[]
 
         };
     }
@@ -30,14 +32,17 @@ class UserModel extends EventEmitter {
     }
 
     changeNewPetProperty(property,value) {
+
         this.state = {
             ...this.state,
             newPet:{
-                ...this.addListener.state.newPet,
+                ...this.state.newPet,
                 [property]: value
             }
         };
-        this.emit("change",this.state);
+        // console.log("change pet: " + property + " " + value);
+        // console.log(this.state.newPet);
+        this.emit("user_change",this.state);
     }
 
     login() {
@@ -47,7 +52,7 @@ class UserModel extends EventEmitter {
                 ...this.state,
                 userType:response.response
             };
-            console.log("user type:" + this.state.userType)
+            // console.log("user type:" + this.state.userType)
             this.emit("change",this.state);
         })
         
@@ -60,11 +65,76 @@ class UserModel extends EventEmitter {
                 ...this.state,
                 pets: pets
             };
-            console.log("loaded pets" + this.state.pets);
-            this.emit("change", this.state);
+            // console.log("loaded pets" + this.state.pets);
+            this.emit("user_change", this.state);
         })
     }
 
+    addPet(){
+        const client = new RestClient(this.state.currentUser.username, this.state.currentUser.password);
+        return client.addPet(this.state.currentUser.username,this.state.newPet.petName,this.state.newPet.petType).then( pet => {
+           
+            this.state = {
+                ...this.state,
+                pets: [pet].concat(...this.state.pets)
+            }
+            this.emit("user_change",this.state);
+        })
+    }
+
+    loadBookings(){
+        const client = new RestClient(this.state.currentUser.username, this.state.currentUser.password);
+        return client.getBookings(this.state.currentUser.username,this.state.currentUser.password).then( bookings => {
+            this.state = {
+                ...this.state,
+                bookings: bookings
+            };
+            // console.log("loaded pets" + this.state.pets);
+            this.emit("user_change", this.state);
+        })
+    }
+
+    book(){
+        const client = new RestClient(this.state.currentUser.username, this.state.currentUser.password);
+        return client.book(this.state.currentUser.username,this.state.newPet.petName,0).then( book => {
+            this.state = {
+                ...this.state,
+                bookings:[book].concat(...this.state.bookings)
+            };
+            // console.log("loaded pets" + this.state.pets);
+            this.emit("user_change", this.state);
+        })
+    }
+
+    loadPetsToCare(){
+        const client = new RestClient(this.state.currentUser.username, this.state.currentUser.password);
+        return client.getPetsToCare(this.state.currentUser.username,this.state.currentUser.password).then( bookings => {
+            this.state = {
+                ...this.state,
+                bookings:bookings
+            };
+            this.emit("care_change", this.state);
+        })
+    }
+
+    carePet(id,username,petName){
+        const client = new RestClient(this.state.currentUser.username, this.state.currentUser.password);
+        return client.carePet(username,petName,10,id);
+    }
+
+    checkout(id,username,petName){
+        const client = new RestClient(this.state.currentUser.username, this.state.currentUser.password);
+        return client.checkout(id,username,petName).then( () => {
+            const filteredBookings = this.state.bookings.filter(booking => {
+               return booking.id !== id
+            })
+            this.state = {
+                ...this.state,
+                bookings: filteredBookings
+            };
+            this.emit("user_change",this.state);
+        });
+    }
 
 }
 

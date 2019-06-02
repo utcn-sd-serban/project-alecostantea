@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+//this should rather be named booking because i use it as a booking mechanism but it has the same data as a payment
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,4 +25,9 @@ public class Payment {
     @JoinColumn
     private Room room;
     private Integer price;
+
+
+    public void updatePrice(Integer price){
+        this.price = this.price + price;
+    }
 }

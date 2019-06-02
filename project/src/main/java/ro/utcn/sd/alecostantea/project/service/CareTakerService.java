@@ -4,6 +4,7 @@ package ro.utcn.sd.alecostantea.project.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ro.utcn.sd.alecostantea.project.model.CareTaker;
+import ro.utcn.sd.alecostantea.project.model.Payment;
 import ro.utcn.sd.alecostantea.project.model.Pet;
 import ro.utcn.sd.alecostantea.project.persistence.JPA.CareTakerRepository;
 import ro.utcn.sd.alecostantea.project.persistence.JPA.RepositoryFactory;
@@ -45,8 +46,8 @@ public class CareTakerService {
     }
 
     @Transactional
-    List<Pet> getPetsToCareFor(CareTaker careTaker) {
-        List<Pet> pets = factory.createPetRepository().findALL();
+    public List<Pet> getPetsToCareFor(CareTaker careTaker) {
+        List<Pet> pets = factory.createPaymentRepository().findALL().stream().map(Payment::getPet).collect(Collectors.toList());
         pets = pets.stream().filter(pet -> careTaker.getCompatiblePets().contains(pet)).collect(Collectors.toList());
         return pets;
     }

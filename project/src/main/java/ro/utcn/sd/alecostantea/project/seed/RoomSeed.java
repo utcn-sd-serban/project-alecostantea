@@ -10,6 +10,7 @@ import ro.utcn.sd.alecostantea.project.model.Room;
 import ro.utcn.sd.alecostantea.project.service.PetTypeService;
 import ro.utcn.sd.alecostantea.project.service.RoomService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -25,12 +26,13 @@ public class RoomSeed implements CommandLineRunner {
 
         if (roomService.findAll().isEmpty()) {
             List<PetType> supportedPets = petTypeService.findAll();
-            Room room = new Room(null, supportedPets);
-            roomService.save(room);
-            roomService.save(room);
-            roomService.save(room);
-            roomService.save(room);
-            roomService.save(room);
+            List<PetType> petTypes = new ArrayList<>();
+            petTypes.add(supportedPets.get(0));
+            roomService.save(new Room(null, supportedPets));
+            roomService.save(new Room(null,petTypes));
+            petTypes = new ArrayList<>();
+            petTypes.add(supportedPets.get(1));
+            roomService.save(new Room(null,petTypes));
 
         }
     }

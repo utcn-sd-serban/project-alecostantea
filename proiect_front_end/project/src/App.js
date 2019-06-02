@@ -4,6 +4,7 @@ import SmartLogin from './view/SmartLogin';
 import {HashRouter, Switch, Route} from "react-router-dom"; 
 import SmartCareTaker from './view/SmartCareTaker';
 import SmartUser from './view/SmartUser';
+import loginPresenter from './presenter/LoginPresenter';
 const App = () => (
   <div className="App">
     <HashRouter>
@@ -13,6 +14,7 @@ const App = () => (
         <Route exact={true} component={SmartUser} path="/user"/>
       </Switch>
     </HashRouter>
+    <button className="button is-primary" onClick={loginPresenter.logOut}> log out</button>
   </div>
 );
 

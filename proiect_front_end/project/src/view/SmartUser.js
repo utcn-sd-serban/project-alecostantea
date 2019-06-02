@@ -5,7 +5,8 @@ import userPresenter from "../presenter/UserPresenter.js";
 const mapModelStateToComponentState = (modelState) => ({
     currentUser: modelState.currentUser,
     pets: modelState.pets,
-    newPet: modelState.newPet
+    newPet: modelState.newPet,
+    bookings: modelState.bookings
 })
 
 export default class SmartUser extends Component {
@@ -13,12 +14,21 @@ export default class SmartUser extends Component {
         super();
         this.state = mapModelStateToComponentState(userModel.state);
 
-        this.listener = userModelState => this.setState(mapModelStateToComponentState(userModelState));
-        userModel.addListener("change",this.listener);
+        this.listener = userModelState => 
+            this.setState(mapModelStateToComponentState(userModelState));
+            
+        userModel.addListener("user_change",this.listener);
+    }
+
+    componentDidMount(){
+        if(this.state.currentUser.username === "")
+        {
+            userPresenter.logOut();
+        }
     }
 
     componentWillUnmount() {
-        userModel.removeAllListeners("change", this.listener);
+        userModel.removeAllListeners("user_change", this.listener);
     }
 
     render() {
@@ -27,6 +37,10 @@ export default class SmartUser extends Component {
                 onChange={userPresenter.onNewPetChange}
                 newPet={this.state.newPet}
                 pets={this.state.pets}
+                addPet={userPresenter.addPet}
+                bookPet={userPresenter.book}
+                bookings={this.state.bookings}
+                checkout={userPresenter.checkout}
             />
         )
     }

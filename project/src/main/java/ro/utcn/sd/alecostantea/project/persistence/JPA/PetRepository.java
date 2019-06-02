@@ -39,5 +39,13 @@ public class PetRepository {
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
+    public Optional<Pet> findByName(String name) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery criteriaQuery = criteriaBuilder.createQuery(Pet.class);
+        Root<Pet> petRoot = criteriaQuery.from(Pet.class);
+        List<Pet> pets = entityManager.createQuery(criteriaQuery.select(petRoot).where(criteriaBuilder.equal(petRoot.get("name"), name))).getResultList();
+        return Optional.ofNullable(pets.size() == 0 ? null : pets.get(0));
+
+    }
 
 }

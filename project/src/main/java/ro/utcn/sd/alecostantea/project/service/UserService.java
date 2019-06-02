@@ -11,6 +11,7 @@ import ro.utcn.sd.alecostantea.project.persistence.JPA.UserRepository;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -100,9 +101,11 @@ public class UserService {
     }
 
     @Transactional
-    public List<Pet> getPets(UserDTO dto){
+    public List<PetDTO> getPets(UserDTO dto){
         User user = factory.createUserRepository().findByUsername(dto.getUsername()).get();
-        return user.getPets();
+        return user.getPets().stream().map(pet -> PetDTO.ofEntity(
+                pet
+        )).collect(Collectors.toList());
     }
     @Transactional
     public Pet addPet(AddPetDTO dto){

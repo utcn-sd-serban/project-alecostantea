@@ -1,13 +1,11 @@
 import userModel from "../model/UserModel";
 
-class UserPresenter {
+class CareTakerPresenter {
    onNewPetChange(property,value){
        userModel.changeNewPetProperty(property,value);
    }
 
-   addPet(){
-       userModel.addPet();
-   }
+   
    logOut(){
     userModel.changeNewPetProperty("petName","");
     userModel.changeNewPetProperty("petType","");
@@ -19,18 +17,11 @@ class UserPresenter {
 
    }
 
-   checkout(id,username,petName){
-       userModel.checkout(id,username,petName);
+   carePet(id,username,petName){
+       userModel.carePet(id,username,petName);
    }
-
-   book(){
-       userModel.book();
-   }
-
-   getBookings(){
-       userModel.loadBookings();
-   }
+   
 }
 
-const userPresenter = new UserPresenter();
-export default userPresenter
+const careTakerPresenter = new CareTakerPresenter();
+export default careTakerPresenter
